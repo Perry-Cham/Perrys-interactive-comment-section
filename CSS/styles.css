@@ -1,0 +1,224 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  --Grayish-blue: hsl(211, 10%, 45%);
+  --Light-gray: hsl(223, 19%, 93%);
+  --Moderate-blue: hsl(238, 40%, 52%);
+  --Soft-red: hsl(358, 79%, 66%);
+  --Light-grayish-blue: hsl(239, 57%, 85%);
+  --Pale-red: hsl(357, 100%, 86%);
+  --Dark-blue: hsl(212, 24%, 26%);
+  --Very-light-gray: hsl(228, 33%, 97%);
+  
+}
+
+.one.hide,
+.hide {
+  display: none;
+}
+
+.body,
+.input {
+  padding: 1rem 0.75rem;
+  background-color: var(--Light-gray);
+  
+}
+
+.reply-p {
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+
+
+.comment-wrapper {
+  font-size: 0.85rem;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--Light-gray);
+}
+
+.reply {
+  width: 80%;
+  margin-left: 20%;
+}
+
+.comment-body {
+  border-radius: 10px;
+  padding: 1rem;
+  color: var(--Grayish-blue);
+  background-color: white;
+}
+
+/*STYLES FOR INPUT ELEMENT WHEN IT APPEARS DURING COMMENT EDITING*/
+.comment-body>.user-input {
+  margin-top: 0.5rem;
+}
+
+/*REST OF COMMENT STYLES*/
+.inner-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.author-img {
+  width: 18%;
+  height: auto;
+}
+
+.inner-wrapper>div {
+  display: flex;
+  align-items: center;
+  color: var(--Moderate-blue);
+  min-width: 176px;
+}
+
+.timestamp {
+  margin-left: 0.5rem;
+  font-weight: 700;
+}
+
+.one {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/*VOTE BUTTON STYLES*/
+.vote-button {
+  background-color: var(--Very-light-gray);
+  border: none;
+  border-radius: 10px;
+  width: 40%;
+  height: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--Moderate-blue);
+}
+
+.vote-button img {
+  height: 50%;
+  width: auto;
+}
+
+.subtract {
+  max-width: 20px;
+  max-height: 5px;
+}
+
+/*VOTE DISPLAY PARAGRAPH*/
+.votes {
+  text-align: center;
+}
+
+/*DELETE BUTTON STYLES*/
+.deleteBtn p {
+  display: inline-block;
+  color: red;
+  margin-left:5px;
+}
+
+.deleteBtn {
+  color: red;
+}
+
+/*USER INPUT STYLES*/
+.user-input {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background-color: white;
+  margin-top: 1.5rem;
+  min-height: 100px;
+  padding: 1.25rem 0.5rem;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+
+.user-img {
+  width: 12%;
+  height: auto;
+  max-width: 50px;
+}
+
+.comment-input {
+  width: 100%;
+  height: 5rem;
+  font-family: sans serif;
+  border: solid 2px var(--Light-gray);
+  border-radius: 5px;
+  padding: 0.5rem 0.25rem;
+}
+
+.send-btn {
+  background-color: var(--Moderate-blue);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: 500;
+  min-height: 2rem;
+}
+
+.user-input .wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+@media only screen and (min-width:700px) {
+  main {
+    background-color: var(--Light-gray);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .body,
+  .input {
+    width: 50%;
+  }
+  
+  .comment-body {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    border-radius: 10px;
+  }
+  
+  .one {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .two {
+    grid-column: 2;
+  }
+  
+  .vote-button {
+    flex-direction: column;
+    height: auto;
+    padding: 0.5rem 0;
+  }
+  
+  .vote-button img {
+    width: 20%;
+  }
+  
+  .subtract {
+    max-width: 1rem;
+  }
+}
