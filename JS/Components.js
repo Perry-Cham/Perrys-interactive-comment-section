@@ -40,6 +40,7 @@ export class Comments {
     this.replyBtn.innerHTML = `<img src="images/icon-reply.svg"> <p
     class="reply-p"></p>`
 
+this.replyBtn.classList.add('reply-btn')
     const replyBtnText = this.replyBtn.querySelector(".reply-p")
 
     if (this.App.currentUser == this.author) {
@@ -54,12 +55,12 @@ export class Comments {
 
     //TOP WRAPPER LOGIC
     this.topWrapper.innerHTML = `
-    <div>
+    <div class="img-container">
     ${this.image.outerHTML}
     <p class=${"timestamp"}>${this.timestamp}</p>
   </div>
     `
-
+//ACTUAL COMMENT TEXT
     this.comment.innerHTML = this.message;
 
     //VOTE DISPLAY LOGIC
@@ -97,7 +98,7 @@ export class Comments {
     this.body.appendChild(div2)
 
     div2.appendChild(this.voteDisplay)
-    if (this.App.currentUser == this.author) {
+   if (this.App.currentUser == this.author) {
       if (window.innerWidth < 700)
         div2.appendChild(deleteBtn)
       else this.topWrapper.appendChild(deleteBtn)

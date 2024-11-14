@@ -77,7 +77,6 @@ body {
   display: flex;
   align-items: center;
   color: var(--Moderate-blue);
-  min-width: 176px;
 }
 
 .timestamp {
@@ -123,7 +122,7 @@ body {
 .deleteBtn p {
   display: inline-block;
   color: red;
-  margin-left:5px;
+  margin-left: 5px;
 }
 
 .deleteBtn {
@@ -141,6 +140,7 @@ body {
   padding: 1.25rem 0.5rem;
   border-radius: 10px;
   flex-wrap: wrap;
+  
 }
 
 
@@ -220,5 +220,30 @@ body {
   
   .subtract {
     max-width: 1rem;
+  }
+  
+  .user-input {
+    grid-column: 2;
+  }
+  
+  
+  
+
+  
+  .deleteBtn {
+    display: flex;
+    align-items: center;
+  }
+  
+  .img-container {
+    border: solid 2px block;
+  }
+  
+.reply-btn{
+  margin-left:0.5rem;
+}
+  
+  .reply .user-img {
+    display: none;
   }
 }
