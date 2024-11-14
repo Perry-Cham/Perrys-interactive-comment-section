@@ -139,15 +139,19 @@ this.replyBtn.classList.add('reply-btn')
   }
 
   handleDelete(e) {
-
-    const Id = e.target.getAttribute("data-id")
+    
+    let Id = e.target.getAttribute("data-id")
+    if(!Id){ Id = e.target.parentNode.getAttribute("data-id")
+     console.log(e)
+      console.log(e.target.tagName)
+    }
     if (this.author === this.App.currentUser) {
       const elements = document.querySelectorAll(".comment-wrapper")
       const elements2 = Array.from(elements);
       const element = elements2.find((child) => child.getAttribute("data-id") ===
         Id)
       element.parentNode.removeChild(element)
-      console.log(this.App);
+      
       let comment = this.App.comments.find((child) => child.Id == Id)
 
       let index = this.App.comments.indexOf(comment)
@@ -155,13 +159,13 @@ this.replyBtn.classList.add('reply-btn')
         this.App.comments.forEach((child) => {
           comment = child.replies.find((child) => child.Id == Id)
           index = child.replies.indexOf(comment)
-          console.log(child, index);
+          
           if (index > -1) child.replies.splice(index, 1)
         })
       } else {
         this.App.comments.splice(index, 1)
       }
-      console.log(this.App, index)
+      
     }
 
   }
@@ -195,7 +199,7 @@ this.replyBtn.classList.add('reply-btn')
     const yes = reply.body.querySelector('.one');
     yes.classList.add('hide')
     input.create(reply.body)
-    console.log(input)
+    
   }
 }
 
@@ -274,7 +278,7 @@ export class UserInput {
     this.App.comments.push(newComment)
     newComment.create();
     this.input.value = ""
-    console.log(this.App)
+    
   }
   edit() {
     const child = this.parent.querySelector(".message")
@@ -287,7 +291,7 @@ export class UserInput {
       child.classList.remove("hide")
     })
     const inputField = this.parent.querySelector(".user-input")
-    console.log(inputField, this.parent)
+    
     inputField.parentNode.removeChild(inputField)
   }
 
@@ -308,6 +312,6 @@ export class UserInput {
     inputField.parentNode.removeChild(inputField)
     const arr = []
     const html = this.parObj.replies.forEach((child) => arr.push(child.wrapper))
-    console.log(this.parObj, this.parObj.replies);
+    
   }
 }
