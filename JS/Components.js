@@ -16,6 +16,7 @@ export class Comments {
     this.replies = [];
     this.reply = false;
     this.message = message;
+    this.Id = document.querySelectorAll('.comment-wrapper').length + 1;
     this.classes =
       ["comment-wrapper", "comment-body", "inner-wrapper", "vote-button", "message"
         , "author-img"]
@@ -40,7 +41,7 @@ export class Comments {
     this.replyBtn.innerHTML = `<img src="images/icon-reply.svg"> <p
     class="reply-p"></p>`
 
-this.replyBtn.classList.add('reply-btn')
+    this.replyBtn.classList.add('reply-btn')
     const replyBtnText = this.replyBtn.querySelector(".reply-p")
 
     if (this.App.currentUser == this.author) {
@@ -60,7 +61,7 @@ this.replyBtn.classList.add('reply-btn')
     <p class=${"timestamp"}>${this.timestamp}</p>
   </div>
     `
-//ACTUAL COMMENT TEXT
+    //ACTUAL COMMENT TEXT
     this.comment.innerHTML = this.message;
 
     //VOTE DISPLAY LOGIC
@@ -73,18 +74,18 @@ this.replyBtn.classList.add('reply-btn')
     `
 
     //DELETE BUTTON LOGIC
-    const deleteBtn = document.createElement("div")
+    const deleteBtn = document.createElement("button")
     const deleteBtnImg = new Image();
     deleteBtnImg.src = "images/icon-delete.svg"
     deleteBtn.innerHTML = `
     ${deleteBtnImg.outerHTML}
     <p>Delete</p>
     `
-    
+
     deleteBtn.classList.add("deleteBtn")
     deleteBtnImg.classList.add("delete")
     deleteBtn.addEventListener("click", (e) => this.handleDelete(e))
-    deleteBtn.setAttribute("data-id", this.Id)
+
 
 
     //APPEND THE ELEMENTS TO THE BODY OF THE COMMENT
@@ -98,7 +99,7 @@ this.replyBtn.classList.add('reply-btn')
     this.body.appendChild(div2)
 
     div2.appendChild(this.voteDisplay)
-   if (this.App.currentUser == this.author) {
+    if (this.App.currentUser == this.author) {
       if (window.innerWidth < 700)
         div2.appendChild(deleteBtn)
       else this.topWrapper.appendChild(deleteBtn)
@@ -109,7 +110,8 @@ this.replyBtn.classList.add('reply-btn')
     div2.classList.add("one")
 
     this.wrapper.appendChild(this.body)
-    this.wrapper.setAttribute("data-id", this.Id)
+    this.wrapper.setAttribute("data-id", `${this.Id}`)
+    deleteBtn.setAttribute("data-id", `${this.Id}`)
 
     if (!this.reply) {
       document.querySelector(".body").appendChild(this.wrapper)
@@ -117,6 +119,7 @@ this.replyBtn.classList.add('reply-btn')
       this.parent.appendChild(this.wrapper)
       this.wrapper.classList.add("reply")
     }
+    //Give the comment replies proper data attributes
 
   }
 
@@ -124,6 +127,8 @@ this.replyBtn.classList.add('reply-btn')
     this.create()
     this.wrapper.classList.add("reply")
     this.parent.appendChild(this.wrapper)
+
+
   }
 
   handleScore(e) {
@@ -139,35 +144,15 @@ this.replyBtn.classList.add('reply-btn')
   }
 
   handleDelete(e) {
-    
     let Id = e.target.getAttribute("data-id")
-    if(!Id){ Id = e.target.parentNode.getAttribute("data-id")
-     console.log(e)
-      console.log(e.target.tagName)
-    }
-    if (this.author === this.App.currentUser) {
-      const elements = document.querySelectorAll(".comment-wrapper")
-      const elements2 = Array.from(elements);
-      const element = elements2.find((child) => child.getAttribute("data-id") ===
-        Id)
-      element.parentNode.removeChild(element)
-      
-      let comment = this.App.comments.find((child) => child.Id == Id)
-
-      let index = this.App.comments.indexOf(comment)
-      if (index === -1) {
-        this.App.comments.forEach((child) => {
-          comment = child.replies.find((child) => child.Id == Id)
-          index = child.replies.indexOf(comment)
-          
-          if (index > -1) child.replies.splice(index, 1)
-        })
-      } else {
-        this.App.comments.splice(index, 1)
-      }
-      
+    if (!Id) {
+      Id = e.target.parentNode.getAttribute("data-id")
     }
 
+    if (this.App.currentUser == this.author) {
+      const modal = new Modal("Delete Comment", "Are you sure you want to delete this comment? This will remove the comment and cannot be undone!", this, true, Id);
+      modal.create();
+    }
   }
 
   handleUpdate() {
@@ -190,23 +175,28 @@ this.replyBtn.classList.add('reply-btn')
       this.App.currentUser, 0, 'A few seconds Ago', this.wrapper, this.App)
     reply.reply = true;
     reply.create();
-    this.replies.unshift(reply)
+    const comments = document.querySelectorAll(".comment-wrapper");
 
+
+    this.replies.push(reply)
 
     const input = new UserInput(this.App, true, false, this.wrapper);
     input.parObj = this;
+
+    input.targetObj = reply;
     reply.comment.classList.add('hide')
     const yes = reply.body.querySelector('.one');
     yes.classList.add('hide')
     input.create(reply.body)
-    
+
   }
 }
 
 
 export class UserInput {
-  constructor(App, reply = false, edit = false, parent = null) {
+  constructor(App, reply = false, edit = false, parent = null,) {
     this.App = App;
+    this.targetObj = null;
     this.body = document.createElement("div")
     this.image = new Image();
     this.image.src = "images/avatars/image-juliusomo.png"
@@ -278,7 +268,7 @@ export class UserInput {
     this.App.comments.push(newComment)
     newComment.create();
     this.input.value = ""
-    
+
   }
   edit() {
     const child = this.parent.querySelector(".message")
@@ -291,7 +281,7 @@ export class UserInput {
       child.classList.remove("hide")
     })
     const inputField = this.parent.querySelector(".user-input")
-    
+
     inputField.parentNode.removeChild(inputField)
   }
 
@@ -308,10 +298,107 @@ export class UserInput {
 
     child.classList.remove("hide")
     child.innerHTML = this.input.value;
-    this.parObj.replies[0].message = this.input.value;
+    this.targetObj.message = this.input.value;
     inputField.parentNode.removeChild(inputField)
-    const arr = []
-    const html = this.parObj.replies.forEach((child) => arr.push(child.wrapper))
-    
+  }
+}
+
+export class Modal {
+  constructor(heading, message, parent = null, Delete = true, id = null, target = null) {
+    //MODAL COMPONENTS
+    this.wrapper = document.createElement("div")
+    this.body = document.createElement("div")
+    this.message = message;
+    this.messageTag = document.createElement("p")
+    this.heading = heading;
+    this.headingTag = document.createElement("h2")
+    this.confirmBtn = document.createElement("button");
+    this.declineBtn = document.createElement("button");
+
+    //DATA OR STATE
+    this.delete = Delete;
+    this.parObj = parent;
+    this.Id = id;
+    this.targetElement = target;
+
+    //CLASSES AND COMPONENT LIST
+    this.classes = ["modal-wrapper", "modal-body", "modal-heading", "modal-message", "confirmBtn", "declineBtn"]
+  }
+  addClass() {
+    const components = [this.wrapper, this.body, this.headingTag, this.messageTag, this.confirmBtn, this.declineBtn]
+
+    for (let i = 0; i < components.length; i++) {
+      components[i].classList.add(this.classes[i])
+    }
+
+    this.declineBtn.classList.add("modal-Btn")
+    this.confirmBtn.classList.add("modal-Btn")
+  }
+  create() {
+    this.addClass();
+    this.headingTag.innerHTML = this.heading;
+    this.messageTag.innerHTML = this.message;
+
+    if (this.delete) {
+      this.declineBtn.innerHTML = "No, cancel";
+      this.confirmBtn.innerHTML = "Yes, delete";
+
+      //ADD EVENT LISTENERS
+      this.declineBtn.addEventListener("click", () => this.cancel())
+      this.confirmBtn.addEventListener("click", () => this.deleteMsg())
+    } else {
+      this.declineBtn.innerHTML = "No, cancel";
+      this.confirmBtn.innerHTML = "Yes, edit";
+
+      //ADD EVENT LISTENERS
+      this.declineBtn.addEventListener("click", () => this.cancel())
+      this.confirmBtn.addEventListener("click", () => this.editMsg())
+    }
+
+
+    const wrapper = document.createElement("div")
+    wrapper.appendChild(this.declineBtn);
+    wrapper.appendChild(this.confirmBtn);
+
+    const bodyNodes = [this.headingTag, this.messageTag, wrapper]
+    bodyNodes.forEach((child) => {
+
+      this.body.appendChild(child)
+    })
+    this.wrapper.appendChild(this.body)
+    document.body.appendChild(this.wrapper)
+  }
+  deleteMsg() {
+    let element = this.parObj.App.comments.find(child => child.Id == this.Id)
+
+    if (element) {
+      let index = element.Id;
+
+      this.parObj.App.comments.splice(index, 1)
+
+      element.body.parentNode.parentNode.removeChild(element.wrapper)
+      this.Unmount()
+    } else {
+
+      let index;
+      for (let i = 0; i < this.parObj.App.comments.length; i++) {
+        // Tab to edit
+        let child = this.parObj.App.comments[i];
+        let element2 = child.replies.find((reply) => reply.Id == this.Id)
+        let elementIndex = child.replies.indexOf(element2);
+        child.replies.splice(elementIndex, 1)
+
+        if (element2)
+          element2.wrapper.parentNode.removeChild(element2.wrapper)
+      }
+      this.Unmount();
+    }
+  }
+  editMsg() { }
+  cancel() {
+    this.Unmount()
+  }
+  Unmount() {
+    document.body.removeChild(this.wrapper)
   }
 }

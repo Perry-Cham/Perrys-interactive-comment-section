@@ -126,10 +126,13 @@ body {
   display: inline-block;
   color: red;
   margin-left: 5px;
+  border:solid 2px black;
 }
 
 .deleteBtn {
   color: red;
+  border: none;
+  background-color:transparent ;
 }
 
 /*USER INPUT STYLES*/
@@ -179,6 +182,47 @@ body {
   margin-top: 1rem;
 }
 
+/* MODAL */
+.modal-wrapper{
+  width:100vw;
+  height:100vh;
+  background-color:hsla(235, 0%, 0%, 0.3);
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  position:fixed;
+  top:0;
+  left:0;
+}
+.modal-body{
+  background-color:white;
+  padding:1rem 1rem;
+  width:85%;
+  max-width:350px;
+  border-radius:10px;
+}
+.modal-heading{
+  font-size:1.5rem;
+  color:var(--Grayish-blue);
+}
+.modal-message{
+  text-align: justify;
+}
+.modal-Btn{
+  padding:0.5rem 0.75rem;
+  border-radius:5px;
+  font-weight:490;
+  color: white;
+  border:none;
+  font-size:1.125rem;
+}
+.confirmBtn{
+  background-color:var(--Soft-red);
+  margin-left:1rem;
+}
+.declineBtn{
+  background-color:var(--Grayish-blue);
+}
 @media only screen and (min-width:700px) {
   main {
     background-color: var(--Light-gray);
@@ -245,7 +289,7 @@ body {
 .reply-btn{
   margin-left:0.5rem;
 }
-v  
+
   .reply .user-img {
     display: none;
   }
