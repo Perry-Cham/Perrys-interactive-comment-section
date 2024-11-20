@@ -126,9 +126,7 @@ body {
   display: inline-block;
   color: red;
   margin-left: 5px;
-  border:solid 2px black;
 }
-
 .deleteBtn {
   color: red;
   border: none;
@@ -293,4 +291,14 @@ body {
   .reply .user-img {
     display: none;
   }
+  
+/* HOVER STATES FOR ELEMENTS */
+.deleteBtn:hover, .reply-btn:hover,  .send-btn:hover{
+  opacity:50%;
+  cursor:pointer;
+}
+.comment-input:focus{
+  outline: 2px solid var(--Moderate-blue);
+}
+ 
 }
