@@ -300,5 +300,19 @@ body {
 .comment-input:focus{
   outline: 2px solid var(--Moderate-blue);
 }
- 
+
+/* STYLING FOR MAIN USER INPUT ELEMENT */ 
+.input > .user-input{
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding:1.25rem 1rem;
+}
+.input  .comment-input{
+  width:50%;
+}
+.input .wrapper{
+  width: max-content;
+  margin:0;
+}
 }
