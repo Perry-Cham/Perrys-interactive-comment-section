@@ -1,3 +1,5 @@
+import { saveState } from './Utilities.js';
+
 export class Comments {
   constructor(image, message, author, score, timestamp, parent, app = null) {
     this.App = app;
@@ -119,7 +121,6 @@ export class Comments {
       this.parent.appendChild(this.wrapper)
       this.wrapper.classList.add("reply")
     }
-    //Give the comment replies proper data attributes
 
   }
 
@@ -141,6 +142,7 @@ export class Comments {
       this.votes--;
       votes.innerHTML = this.votes
     }
+    saveState(this.App)
   }
 
   handleDelete(e) {
@@ -149,10 +151,12 @@ export class Comments {
       Id = e.target.parentNode.getAttribute("data-id")
     }
 
+
     if (this.App.currentUser == this.author) {
       const modal = new Modal("Delete Comment", "Are you sure you want to delete this comment? This will remove the comment and cannot be undone!", this, true, Id);
       modal.create();
     }
+
   }
 
   handleUpdate() {
@@ -164,7 +168,9 @@ export class Comments {
     const element = this.body.querySelector(".message")
     const input = new UserInput(this.App, false, true, this.body);
     input.create(this.body);
+    input.targetObj = this;
     input.input.value = element.innerHTML;
+
   }
 
   handleReply() {
@@ -188,6 +194,7 @@ export class Comments {
     const yes = reply.body.querySelector('.one');
     yes.classList.add('hide')
     input.create(reply.body)
+
 
   }
 }
@@ -257,7 +264,8 @@ export class UserInput {
     //APPEND ELEMENTS TO THE DOM
     this.body.appendChild(this.input)
     this.body.appendChild(wrapper)
-    if (!element.querySelector(".wrapper")) element.appendChild(this.body)
+    /*if (!element.querySelector(".wrapper")) element.appendChild(this.body)*/
+    if (!element.querySelector('.wrapper')) element.appendChild(this.body)
   }
 
   write() {
@@ -268,13 +276,14 @@ export class UserInput {
     this.App.comments.push(newComment)
     newComment.create();
     this.input.value = ""
-
+    saveState(this.App)
   }
   edit() {
     const child = this.parent.querySelector(".message")
     child.innerHTML = this.input.value;
     child.classList.remove("hide")
-
+    this.targetObj.message = this.input.value;
+    console.log(this.targetObj)
 
     const yes = this.parent.querySelectorAll(".one")
     yes.forEach((child) => {
@@ -283,6 +292,7 @@ export class UserInput {
     const inputField = this.parent.querySelector(".user-input")
 
     inputField.parentNode.removeChild(inputField)
+    saveState(this.App)
   }
 
   Reply(element) {
@@ -300,9 +310,12 @@ export class UserInput {
     child.innerHTML = this.input.value;
     this.targetObj.message = this.input.value;
     inputField.parentNode.removeChild(inputField)
+    saveState(this.App);
   }
 }
 
+
+/*Modal Class For delete Confirmation */
 export class Modal {
   constructor(heading, message, parent = null, Delete = true, id = null, target = null) {
     //MODAL COMPONENTS
@@ -370,17 +383,17 @@ export class Modal {
   }
   deleteMsg() {
     let element = this.parObj.App.comments.find(child => child.Id == this.Id)
-
     if (element) {
-      let index = element.Id;
-
+      let index = this.parObj.App.comments.indexOf(element)
       this.parObj.App.comments.splice(index, 1)
 
-      element.body.parentNode.parentNode.removeChild(element.wrapper)
-      this.Unmount()
-    } else {
 
+      element.body.parentNode.parentNode.removeChild(element.wrapper)
+      saveState(this.parObj.App)
+      this.Unmount()
+    } else if (!element) {
       let index;
+      console.log(index)
       for (let i = 0; i < this.parObj.App.comments.length; i++) {
         // Tab to edit
         let child = this.parObj.App.comments[i];
@@ -390,11 +403,11 @@ export class Modal {
 
         if (element2)
           element2.wrapper.parentNode.removeChild(element2.wrapper)
+        saveState(this.parObj.App)
       }
       this.Unmount();
     }
   }
-  editMsg() { }
   cancel() {
     this.Unmount()
   }
@@ -402,3 +415,4 @@ export class Modal {
     document.body.removeChild(this.wrapper)
   }
 }
+

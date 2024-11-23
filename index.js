@@ -1,25 +1,29 @@
 import { Comments, UserInput, Modal } from './JS/Components.js'
+import { saveState, loadState } from './JS/Utilities.js'
 
 let Data;
 let date = new Date();
-
+//Old state is not parsed here. This only serves to confirm whether the object exists or not in the load state function
+let oldState = localStorage.getItem('one');
 const body = document.querySelector(".body");
-const inputS = document.querySelector(".input");
+const inputSection = document.querySelector(".input");
+
 const App = {
   comments: [],
   Data: []
 }
 
-fetch('http://localhost:8800/data.json').then(response =>
+
+fetch('http://localhost:7700/data.json').then(response =>
   response.json()).then((data) => {
     Data = data;
-    setUp();
+    oldState ? loadState(App, Comments, UserInput) : setUp(Data);
   })
 
-function setUp() {
-  App.currentUser = Data.currentUser.username;
-  App.UserImage = Data.currentUser.image.png;
-  App.Data = [...Data.comments];
+function setUp(value) {
+  App.currentUser = value.currentUser.username;
+  App.UserImage = value.currentUser.image.png;
+  App.Data = [...value.comments];
   App.comments = [];
 
   // Loop through each comment in App.Data
@@ -52,7 +56,7 @@ function setUp() {
           App
         );
         Reply.parObj = comment.replies;
-       // Reply.Id = reply.Id;
+        // Reply.Id = reply.Id;
         Reply.reply = true;
         Reply.parent = comment.wrapper;
         Reply.mountReply();
@@ -63,9 +67,8 @@ function setUp() {
 
 
   const inputDiv = new UserInput(App);
-  inputDiv.create(inputS);
-
+  inputDiv.create(inputSection);
 }
-function main() {
 
-}
+
+
