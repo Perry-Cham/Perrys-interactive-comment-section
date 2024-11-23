@@ -70,12 +70,13 @@ export function loadState(App, Comments, UserInput) {
           comment.wrapper,
           App
         );
+        Reply.time = reply.time;
         Reply.parObj = comment.replies;
         Reply.Id = reply.id;
         Reply.mountReply();
-        // Reply.wrapper.setAttribute('data-Id', reply.id)
+
         Reply.reply = true;
-        if (Reply.time) comment.wrapper.querySelector(".timestamp").innerHTML = `${calculateTimeStamp(Reply.time)}`
+        if (Reply.time) Reply.wrapper.querySelector(".timestamp").innerHTML = `${calculateTimeStamp(Reply.time)}`
         Reply.parent = comment.wrapper;
         comment.replies.push(Reply);
       });
