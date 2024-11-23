@@ -10,7 +10,7 @@ const App = {
   Data: []
 }
 
-fetch('http://localhost:7700/data.json').then(response =>
+fetch('http://localhost:8800/data.json').then(response =>
   response.json()).then((data) => {
     Data = data;
     setUp();
