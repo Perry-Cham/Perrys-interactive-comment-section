@@ -4,7 +4,7 @@ import { saveState, loadState } from './JS/Utilities.js'
 let Data;
 let date = new Date();
 //Old state is not parsed here. This only serves to confirm whether the object exists or not in the load state function
-let oldState = localStorage.getItem('one');
+
 const body = document.querySelector(".body");
 const inputSection = document.querySelector(".input");
 
@@ -17,6 +17,7 @@ const App = {
 fetch('http://localhost:7700/data.json').then(response =>
   response.json()).then((data) => {
     Data = data;
+    let oldState = localStorage.getItem('one');
     oldState ? loadState(App, Comments, UserInput) : setUp(Data);
   })
 

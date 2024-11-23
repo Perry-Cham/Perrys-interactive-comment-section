@@ -1,4 +1,4 @@
-import { saveState } from './Utilities.js';
+import { saveState, calculateTimeStamp } from './Utilities.js';
 
 export class Comments {
   constructor(image, message, author, score, timestamp, parent, app = null) {
@@ -195,7 +195,7 @@ export class Comments {
     yes.classList.add('hide')
     input.create(reply.body)
 
-
+    reply.wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
 
@@ -273,8 +273,11 @@ export class UserInput {
     const text = this.input.value;
     const newComment = new Comments(this.App.UserImage, text, this.App.currentUser, 0, "A few Seconds Ago", null, this.App)
     newComment.Id = comments.length + 1;
+    newComment.time = Date.now();
     this.App.comments.push(newComment)
     newComment.create();
+    newComment.wrapper.querySelector(".timestamp").innerHTML =
+      `${calculateTimeStamp(newComment.time)}`
     this.input.value = ""
     saveState(this.App)
   }
@@ -283,7 +286,7 @@ export class UserInput {
     child.innerHTML = this.input.value;
     child.classList.remove("hide")
     this.targetObj.message = this.input.value;
-    console.log(this.targetObj)
+
 
     const yes = this.parent.querySelectorAll(".one")
     yes.forEach((child) => {
@@ -308,7 +311,10 @@ export class UserInput {
 
     child.classList.remove("hide")
     child.innerHTML = this.input.value;
+    this.targetObj.time = Date.now();
     this.targetObj.message = this.input.value;
+    this.targetObj.wrapper.querySelector(".timestamp").innerHTML =
+      `${calculateTimeStamp(this.targetObj.time)}`
     inputField.parentNode.removeChild(inputField)
     saveState(this.App);
   }
@@ -393,7 +399,6 @@ export class Modal {
       this.Unmount()
     } else if (!element) {
       let index;
-      console.log(index)
       for (let i = 0; i < this.parObj.App.comments.length; i++) {
         // Tab to edit
         let child = this.parObj.App.comments[i];
