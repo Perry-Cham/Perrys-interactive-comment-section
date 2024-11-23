@@ -40,7 +40,7 @@ export class Comments {
     //EDIT THE HTML OF THE COMPONENTS
 
     //REPLY/EDIT BUTTON LOGIC
-    this.replyBtn.innerHTML = `<img src="images/icon-reply.svg"> <p
+    this.replyBtn.innerHTML = `<img src="images/icon-reply.svg" alt="reply button arrow"> <p
     class="reply-p"></p>`
 
     this.replyBtn.classList.add('reply-btn')
@@ -72,15 +72,16 @@ export class Comments {
     this.voteDisplay.addEventListener("click", (e) => this.handleScore(e))
 
     this.voteDisplay.innerHTML = `
-    <img class="add" src=${"images/icon-plus.svg"}>
+    <img class="add" src=${"images/icon-plus.svg"} alt="plus icon">
     <p class="votes">${this.votes}</p>
-   <img class="subtract" src="images/icon-minus.svg">
+   <img class="subtract" src="images/icon-minus.svg" alt="minus icon">
     `
 
     //DELETE BUTTON LOGIC
     const deleteBtn = document.createElement("button")
     const deleteBtnImg = new Image();
     deleteBtnImg.src = "images/icon-delete.svg"
+    deleteBtnImg.alt = "delete button icon"
     deleteBtn.innerHTML = `
     ${deleteBtnImg.outerHTML}
     <p>Delete</p>
@@ -135,8 +136,13 @@ export class Comments {
   }
 
   handleScore(e) {
+    
+    //Select the paragraph within the vote component that displays the no. of votes
     const votes = e.target.parentNode
-      .querySelector(".votes")
+      .querySelector(".votes"
+      )
+      
+      //Add or subtract votes from the number in object via event delegation
     if (e.target.classList.contains("add")) {
       this.votes++;
       votes.innerHTML = this.votes;
@@ -144,16 +150,19 @@ export class Comments {
       this.votes--;
       votes.innerHTML = this.votes
     }
+    //saves application state
     saveState(this.App)
   }
 
   handleDelete(e) {
+    
+  //GET THE DATA-ID OF THE TARGET ELEMENT
     let Id = e.target.getAttribute("data-id")
     if (!Id) {
       Id = e.target.parentNode.getAttribute("data-id")
     }
 
-
+//FIND OUT IF ITS THE CURRENT USERS COMMENT BEFORE PROCEEDING 
     if (this.App.currentUser == this.author) {
       const modal = new Modal("Delete Comment", "Are you sure you want to delete this comment? This will remove the comment and cannot be undone!", this, true, Id);
       modal.create();
@@ -162,6 +171,8 @@ export class Comments {
   }
 
   handleUpdate() {
+    
+    //HIDES THE COMMENTS CONTENT AND APPENDS AN INSTANCE OF THE USER INPUT OBJECT TO THE COMMENT
     this.comment.classList.add("hide")
     const yes = this.body.querySelectorAll(".one")
     yes.forEach((child) => {
@@ -171,6 +182,8 @@ export class Comments {
     const input = new UserInput(this.App, false, true, this.body);
     input.create(this.body);
     input.targetObj = this;
+    
+    //ADD THE OLD COMMENT CONTENT AS THE INITIAL VALUE OF THE NEWLY ADDED INPUT ELEMENT
     input.input.value = element.innerHTML;
 
   }
@@ -179,6 +192,7 @@ export class Comments {
     /*CREATE A NEW COMMENT, APPEND IT TO WRAPPER HIDE TO THE MESSAGE AND .ONE
     ELEMENT APPEND THE INPUT ELEMENT CREATE CUSTOM METHKD ON INPUT THAT HANDLES
     RESPLIES THEN DISMOUNT INPUT ELEMENT AND VOILA! COMMENTS*/
+    
     const reply = new Comments(this.App.UserImage, 'Hey brother',
       this.App.currentUser, 0, 'A few seconds Ago', this.wrapper, this.App)
     reply.reply = true;
@@ -229,15 +243,15 @@ export class UserInput {
   create(element) {
     this.addClass();
 
-    //THIS CODE CHANGES THE TEXT OF THE BUTTON ELEMENT DEPENDING ON WHETHER ITS A NEW COMMENT OR AN EDIT
+    //THIS CODE CHANGES THE TEXT OF THE BUTTON ELEMENT DEPENDING ON WHETHER ITS A NEW COMMENT OR THE USER IS EDITING ONE
     this.input.setAttribute("placeholder", "Add a comment")
     if (this.Edit) this.submitBtn.innerHTML = "Update"
     else if (!this.reply) this.submitBtn.innerHTML = "Comment";
     else if (this.reply) this.submitBtn.innerHTML = " Reply"
 
+
+  //APPEND DIFFERENT ELEMENTS TO THE WRAPPER COMPONENT BASED ON SCREEN SIZE FOR RESPONSIVENESS
     const wrapper = document.createElement("div")
-
-
     wrapper.classList.add("wrapper")
     if (window.innerWidth < 500) {
       wrapper.appendChild(this.image);
@@ -266,34 +280,46 @@ export class UserInput {
     //APPEND ELEMENTS TO THE DOM
     this.body.appendChild(this.input)
     this.body.appendChild(wrapper)
-    /*if (!element.querySelector(".wrapper")) element.appendChild(this.body)*/
     if (!element.querySelector('.wrapper')) element.appendChild(this.body)
   }
 
   write() {
+    //CREATES A NODE LIST OF ALL COMMENTS SO THAT I CAN USE THE LENGTH PROPERTY FOR THE DATA-ID AND ID PROPERTIES OF THE COMMENT AND ITS HTML RESPECTIVELY 
     const comments = document.querySelectorAll(".comment-wrapper")
+    
+    
     const text = this.input.value;
     const newComment = new Comments(this.App.UserImage, text, this.App.currentUser, 0, "A few Seconds Ago", null, this.App)
     newComment.Id = comments.length + 1;
     newComment.time = Date.now();
     this.App.comments.push(newComment)
     newComment.create();
+    
+    //ADDS A DYNAMIC TIMESTAMP
     newComment.wrapper.querySelector(".timestamp").innerHTML =
       `${calculateTimeStamp(newComment.time)}`
-    this.input.value = ""
+    this.input.value = "";
+    
+    //SAVES APPLICATION STATE
     saveState(this.App)
   }
   edit() {
+    
+    //CHANGES THE HTML OF THE COMMENTS CONTENT
     const child = this.parent.querySelector(".message")
     child.innerHTML = this.input.value;
-    child.classList.remove("hide")
+    
+    //UPDATES THE MESSAGE PROPERTY OF THE CURRENT OBJECT
     this.targetObj.message = this.input.value;
-
-
+    
+    //REMOVES THE HIDE CLASS FROM THE COMMENT'S CONTENT AND THE .ONE ELEMENT INSIDE THE COMMENT BODY
+    child.classList.remove("hide")
+    
     const yes = this.parent.querySelectorAll(".one")
     yes.forEach((child) => {
       child.classList.remove("hide")
     })
+    
     const inputField = this.parent.querySelector(".user-input")
 
     inputField.parentNode.removeChild(inputField)
@@ -301,6 +327,7 @@ export class UserInput {
   }
 
   Reply(element) {
+
 
     const yes = this.parent.querySelectorAll(".one")
     yes.forEach((child) => {
@@ -312,12 +339,19 @@ export class UserInput {
     const child = inputField.parentNode.querySelector(".message")
 
     child.classList.remove("hide")
+  
+  //UPDATE BOTH THE INTERNAL MESSAGE PROPERTY AND THE INNER HTML OF THE COMMENT PROPERTY
     child.innerHTML = this.input.value;
-    this.targetObj.time = Date.now();
     this.targetObj.message = this.input.value;
+    
+    //ADDS A TIMESTAMP TO THE NEWLY CREATED REPLY
+    this.targetObj.time = Date.now();
+    
     this.targetObj.wrapper.querySelector(".timestamp").innerHTML =
       `${calculateTimeStamp(this.targetObj.time)}`
     inputField.parentNode.removeChild(inputField)
+    
+    //SAVE APPLICATION STATE
     saveState(this.App);
   }
 }
@@ -390,16 +424,26 @@ export class Modal {
     document.body.appendChild(this.wrapper)
   }
   deleteMsg() {
+    
+    //FIND THE TARGET OBJECT IN THE APP.COMMENTS ARRAY AND DELETE IT
     let element = this.parObj.App.comments.find(child => child.Id == this.Id)
     if (element) {
       let index = this.parObj.App.comments.indexOf(element)
       this.parObj.App.comments.splice(index, 1)
 
-
+//DELETE THE COMMENTS HTML FROM THE PAGE
       element.body.parentNode.parentNode.removeChild(element.wrapper)
+      
+//SAVE THE APPLICATION STATE
       saveState(this.parObj.App)
+    
+//UNMOUNT THE MODAL
       this.Unmount()
+
     } else if (!element) {
+  
+//LOOP THROUGH THE ELEMENTS INSIDE THE APP.COMMENTS ARRAY IF THE TARGET OBJECT CANT BE FOUND IN THE MAIN ARRAY
+
       let index;
       for (let i = 0; i < this.parObj.App.comments.length; i++) {
         // Tab to edit
