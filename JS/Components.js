@@ -57,12 +57,14 @@ export class Comments {
 
 
     //TOP WRAPPER LOGIC
+    this.image.alt = `User ${this.author}'s' profile picture`
     this.topWrapper.innerHTML = `
     <div class="img-container">
     ${this.image.outerHTML}
     <p class=${"timestamp"}>${this.timestamp}</p>
   </div>
     `
+  
     //ACTUAL COMMENT TEXT
     this.comment.innerHTML = this.message;
 
