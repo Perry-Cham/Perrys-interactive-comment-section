@@ -14,7 +14,7 @@ const App = {
 }
 
 
-fetch('http://localhost:7700/data.json').then(response =>
+fetch('https://perrys-interactive-comment-section.netlify.app/data.json').then(response =>
   response.json()).then((data) => {
     Data = data;
     let oldState = localStorage.getItem('one');

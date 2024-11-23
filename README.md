@@ -33,3 +33,4 @@ Users should be able to:
 
 ## QUICK START QUIDE
 - The project works by fetching data from the data.json locally from your computer, So to view you need to either change the port number on localhost to whatever you use on your computer or you could change the one you use on your computer to localhost:8800 (In VS code this is easy to do if you have the local server extension installed)
+- To run this branch locally you need to change the url of the fetch request to your local server/ data.json. e.g (http://localhost:800/data.json)
